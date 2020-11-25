@@ -79,10 +79,6 @@ suite_start
 
                 print_info "Stating Clair..."
                 docker run --name configured-clair --network container:clair-db -d "configured-clair" -config=/config/config.yaml
-                wait_until_ready 60
-
-                print_info "Performing health check on Clair..."
-                docker exec configured-clair curl --fail -X GET -I http://localhost:6061/health | grep 200
 
                 print_info "Pulling \"quay.io/ibmz/openjdk:11.0.8\" so that we can scan it with Clair Scanner..."
                 docker pull quay.io/ibmz/openjdk:11.0.8
