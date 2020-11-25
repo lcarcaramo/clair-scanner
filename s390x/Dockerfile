@@ -7,5 +7,9 @@ COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/docker
 RUN apk add --no-cache --virtual .build-deps install -y \
                                                 make \
                                                 dumb-init; \
-    git clone https://github.com/arminc/clair-scanner.git && cd clair-scanner && make installLocal
+    git clone https://github.com/arminc/clair-scanner.git; \
+    cd clair-scanner; \
+    make installLocal; \
+    apk del .build-deps
+    
 ENTRYPOINT [ "/usr/bin/dumb-init", "--", "/go/bin/clair-scanner" ]
