@@ -1,30 +1,18 @@
-language: go
-
-go:
-  - "1.14"
-
+arch: s390x
 services:
   - docker
-
-install:
-  - make install
-  - make docker
-  - ifconfig
-  # Let's stop postgresql
-  - sudo service postgresql stop
-  # wait for postgresql to shutdown
-  - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
-
-script:
-  - make release
-  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
-
-deploy:
-  provider: releases
-  skip_cleanup: true
-  api_key: $API_KEY
-  file_glob: true
-  file: dist/*
-  on:
-    repo: arminc/clair-scanner
-    tags: true
+env:
+  global:
+    - TEST_DIR="$PWD/s390x/test"
+    - TEST_SCRIPT="test.sh"
+    - BUILD_DIR="$PWD/s390x"
+    - REPO="quay.io/ibmz/clair-scanner"
+    - TAG="$REPO:13.0"
+before_script: 
+  - cd $TEST_DIR && chmod +x $TEST_SCRIPT
+  - docker login quay.io -u $ROBOT -p $ROBOT_TOKEN
+script: 
+  - docker build $BUILD_DIR --tag $TAG
+  - cd $TEST_DIR && bash $TEST_SCRIPT 
+after_script:
+  - docker push $REPO
