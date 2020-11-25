@@ -4,9 +4,8 @@ FROM quay.io/ibmz/golang:1.14
 
 COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/docker
 
-RUN apk add --no-cache --virtual .build-deps \
-                                  make \
-                                  dumb-init; \
+RUN apk add --no-cache --virtual .build-deps make; \
+    apk add --no-cache dumb-init; \
     git clone https://github.com/arminc/clair-scanner.git; \
     cd clair-scanner; \
     make installLocal; \
