@@ -7,7 +7,7 @@ env:
     - TEST_SCRIPT="test.sh"
     - BUILD_DIR="$PWD/s390x"
     - REPO="quay.io/ibmz/clair-scanner"
-    - TAG="$REPO"
+    - TAG="$REPO:13.0"
 before_script: 
   - cd $TEST_DIR && chmod +x $TEST_SCRIPT
   - docker login quay.io -u $ROBOT -p $ROBOT_TOKEN
