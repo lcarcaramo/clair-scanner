@@ -1,6 +1,6 @@
 # Tags
 > _Built from [`quay.io/ibmz/golang:1.14`](https://quay.io/repository/ibmz/golang?tab=tags)_
--	[`2.0`](https://github.com/lcarcaramo/clair-scanner/blob/master/s390x/Dockerfile) - [![Build Status](https://travis-ci.com/lcarcaramo/clair-scanner.svg?branch=master)](https://travis-ci.com/lcarcaramo/clair-scanner)
+-	[`?`](https://github.com/lcarcaramo/clair-scanner/blob/master/s390x/Dockerfile) - [![Build Status](https://travis-ci.com/lcarcaramo/clair-scanner.svg?branch=master)](https://travis-ci.com/lcarcaramo/clair-scanner)
 # What is Clair scanner
 
 ## Docker containers vulnerability scan
