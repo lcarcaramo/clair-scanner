@@ -92,7 +92,7 @@ Errors like `[CRIT] ▶ Could not analyze layer: Clair responded with a failure:
 
 `[CRIT] ▶ Could not read Docker image layers: manifest.json is not valid` fires when image version is not specified and is required. Try to add `:version` (.e.g. `:latest`) after the image name.
 
-`[CRIT] ▶ Could not analyze layer: POST to Clair failed Post http://localhost:6060/v1/layers: dial tcp: lookup docker on 127.0.0.53:53: no such host` indicates that clair server could ne be reached. Double check hostname and port in `-c` argument, and your clair settings.
+`[CRIT] ▶ Could not analyze layer: POST to Clair failed Post http://localhost:6060/v1/layers: dial tcp: lookup docker on 127.0.0.1:6060: no such host` indicates that clair server could ne be reached. Double check hostname and port in `-c` argument, and your clair settings.
 
 ## License
 
