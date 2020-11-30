@@ -1,9 +1,7 @@
-# Clair scanner
-
-![Maintenance](https://img.shields.io/maintenance/yes/2020.svg)
-[![Build Status](https://travis-ci.org/arminc/clair-scanner.svg?branch=master)](https://travis-ci.org/arminc/clair-scanner)
-[![Go Report Card](https://goreportcard.com/badge/github.com/arminc/clair-scanner)](https://goreportcard.com/report/github.com/arminc/clair-scanner)
-[![Coverage Status](https://coveralls.io/repos/github/arminc/clair-scanner/badge.svg?branch=master)](https://coveralls.io/github/arminc/clair-scanner?branch=master)
+# Tags
+> _Built from [`quay.io/ibmz/golang:1.14`](https://quay.io/repository/ibmz/golang?tab=tags)_
+-	[`2.0`](https://github.com/lcarcaramo/clair-scanner/blob/master/s390x/Dockerfile) - [![Build Status](https://travis-ci.com/lcarcaramo/clair-scanner.svg?branch=master)](https://travis-ci.com/lcarcaramo/clair-scanner)
+# What is Clair scanner
 
 ## Docker containers vulnerability scan
 
@@ -29,92 +27,27 @@ This is where clair-scanner comes into place. The clair-scanner does the followi
 * Tells you if there are vulnerabilities that are not in the whitelist and fails
 * If everything is fine it completes correctly
 
-## Clair server or standalone
-
-For the clair-scanner to work, you need a clair server. It is not always convenient to have a dedicated clair server, therefore, I have created a way to run this standalone. See here <https://github.com/arminc/clair-local-scan>
-
 ## Credits
 
 The clair-scanner is a copy of the Clair 'analyze-local-images' <https://github.com/coreos/analyze-local-images> with changes/improvements and addition that checks the vulnerabilities against a whitelist.
 
-## Install
+# How to use this image
 
-clair-scanner is available on Linux, MacOS, and Windows platforms.
+* Start a [Clair database](https://quay.io/repository/ibmz/clair) container.
 
-* Binaries for Linux, Windows, and Mac are available in the [releases](https://github.com/arminc/clair-scanner/releases) page.
-* You can also install from source. To do so you must:
-  1. Have go 1.11+ installed  
-  1. Clone the repo
-  1. Build and install the executable
+* Start a Run the Clair Scanner image
+> _Note that `docker.sock` needs to be mounted to the container because this image runs [Docker](https://quay.io/repository/ibmz/docker) inside a container._
 
-  ```sh
-  # Clone the repo
-  git clone git@github.com:arminc/clair-scanner.git
-  # Build and install 
-  cd clair-scanner
-  make build
-  make installLocal
-  # Run
-  ./clair-scanner -h
-  ```
-
-## Build
-
-clair-scanner is built with Go 1.14. Use the Makefile to build and install dependencies.
-
-```bash
-make build
-```
-
-Cross compile:
-
-```bash
-make cross
-```
-
-## Run
-
-Example of a container scan, start Clair:
-
-```bash
-docker run -p 5432:5432 -d --name db arminc/clair-db:latest
-docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
-```
-
-Now scan a container, that has a whitelisted CVE (this is on OSX with Docker for Mac):
-
-```bash
-clair-scanner -w example-alpine.yaml --ip YOUR_LOCAL_IP alpine:3.5
-```
-
-Output:
-
-```bash
-2017/09/24 11:20:24 [INFO] ▶ Start clair-scanner
-2017/09/24 11:20:24 [INFO] ▶ Server listening on port 9279
-2017/09/24 11:20:24 [INFO] ▶ Analyzing 693bdf455e7bf0952f8a4539f9f96aa70c489ca239a7dbed0afb481c87cbe131
-2017/09/24 11:20:24 [INFO] ▶ Image [alpine:3.5] not vulnerable
-```
-
-Or a container that does not have a whitelisted CVE (this is on OSX with Docker for Mac):
-
-```bash
-clair-scanner --ip YOUR_LOCAL_IP alpine:3.5
-```
-
-Output:
-
-```bash
-2017/09/24 11:16:41 [INFO] ▶ Start clair-scanner
-2017/09/24 11:16:41 [INFO] ▶ Server listening on port 9279
-2017/09/24 11:16:41 [INFO] ▶ Analyzing 693bdf455e7bf0952f8a4539f9f96aa70c489ca239a7dbed0afb481c87cbe131
-2017/09/24 11:16:41 [CRIT] ▶ Image contains unapproved vulnerabilities: [CVE-2016-9840 CVE-2016-9841 CVE-2016-9842 CVE-2016-9843]
+```console
+$ docker run --network container:clair --rm -v /var/run/docker.sock:/var/run/docker.sock:ro \
+                       quay.io/ibmz/clair-scanner:latest --threshold="Negligible" --clair="http://localhost:6060" <local image that you want to scan with clair>
+Scan report will be printed to the console.
 ```
 
 ## Help information
 
-```bash
-$ ./clair-scanner -h
+```console
+$ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro quay.io/ibmz/clair-scanner:latest -h
 
 Usage: clair-scanner [OPTIONS] IMAGE
 
@@ -153,12 +86,12 @@ images:
 
 If you get `[CRIT] ▶ Could not save Docker image [image:version]: Error response from daemon: reference does not exist`, this means that image `image:version` is not locally present. You should have this image present locally before trying to analyze it (e.g.: `docker pull image:version`).
 
-Errors like `[CRIT] ▶ Could not analyze layer: Clair responded with a failure: Got response 400 with message {"Error":{"Message":"could not find layer"}}` indicates that Clair can not retrieve a layer from `clair-scanner`. This means that you probably specified a wrong IP address in options (`--ip`). Note that you should use a publicly accessible IP when clair is running in a container, or it wont be able to connect to `clair-scanner`. If clair is running inside the docker, use the docker0 ip address. You can find the docker0 ip address by running `ifconfig docker0 | grep inet`
+Errors like `[CRIT] ▶ Could not analyze layer: Clair responded with a failure: Got response 400 with message {"Error":{"Message":"could not find layer"}}` indicates that Clair can not retrieve a layer from `clair-scanner`. This means that you probably specified a wrong IP address in options (`--ip`). Note that you should use a publicly accessible IP when clair is running in a container, or it wont be able to connect to `clair-scanner`. If Clair and Clair Scanner are running on the same zCX appliance, use Docker networks as shown in the example in the __How to use this image__ section.
 
 `[CRIT] ▶ Could not read Docker image layers: manifest.json is not valid` fires when image version is not specified and is required. Try to add `:version` (.e.g. `:latest`) after the image name.
 
-`[CRIT] ▶ Could not analyze layer: POST to Clair failed Post http://docker:6060/v1/layers: dial tcp: lookup docker on 127.0.0.53:53: no such host` indicates that clair server could ne be reached. Double check hostname and port in `-c` argument, and your clair settings (in clair's `docker-compose.yml` for instance if you run it this way).
+`[CRIT] ▶ Could not analyze layer: POST to Clair failed Post http://docker:6060/v1/layers: dial tcp: lookup docker on 127.0.0.53:53: no such host` indicates that clair server could ne be reached. Double check hostname and port in `-c` argument, and your clair settings.
 
-## Release
+## License
 
-To make a release create a tag and push it
+Apache 2.0 License. See license [here](https://github.com/arminc/clair-scanner/blob/master/LICENSE)
