@@ -35,7 +35,7 @@ The clair-scanner is a copy of the Clair 'analyze-local-images' <https://github.
 
 * Start a [Clair database](https://quay.io/repository/ibmz/clair) container.
 
-* Run the Clair Scanner.
+* Run Clair Scanner.
 > _Note that `docker.sock` needs to be mounted to the container because this image runs [Docker](https://quay.io/repository/ibmz/docker) inside a container._
 
 ```console
