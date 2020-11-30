@@ -85,7 +85,7 @@ suite_start
 
                 print_info "Scanning \"quay.io/ibmz/openjdk:11.0.8\" with Clair Scanner..."
                 docker run --network container:configured-clair --rm -v /var/run/docker.sock:/var/run/docker.sock:ro \
-                       quay.io/ibmz/clair-scanner:latest --threshold="Negligible" --clair="http://localhost:6060" quay.io/ibmz/openjdk:11.0.8
+                       quay.io/ibmz/clair-scanner:13.0 --threshold="Negligible" --clair="http://localhost:6060" quay.io/ibmz/openjdk:11.0.8
 
                 print_success "Success! Local image \"quay.io/ibmz/openjkd:11.0.8\" was scanned."
 
